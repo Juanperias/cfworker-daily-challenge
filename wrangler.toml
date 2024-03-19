@@ -1,0 +1,21 @@
+name = "daily-challenges"
+workers_dev = true
+compatibility_date = "2024-03-14"
+
+[build]
+command = "cargo install -q worker-build && worker-build --release"
+
+[build.upload]
+dir = "build/worker"
+format = "modules"
+main = "./shim.mjs"
+
+[[build.upload.rules]]
+globs = ["**/*.wasm"]
+type = "CompiledWasm"
+
+# Cron Triggers
+# Docs: https://developers.cloudflare.com/workers/platform/triggers/cron-triggers/
+# Configuration: https://developers.cloudflare.com/workers/wrangler/configuration/#triggers
+[triggers]
+crons = ["* 0 * * *"]
