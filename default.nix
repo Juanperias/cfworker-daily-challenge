@@ -86,6 +86,7 @@ in
           cargo-make
           worker-build
           nodePackages.wrangler
+          binaryen
         ]
         ++ buildInputs;
       LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
