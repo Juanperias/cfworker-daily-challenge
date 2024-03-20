@@ -2,10 +2,22 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
+pub struct GraphQLResponse {
+    pub data: ActiveDailyCodingChallengeQuestion,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ActiveDailyCodingChallengeQuestion {
+    pub active_daily_coding_challenge_question: DailyChallenge,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct DailyChallenge {
-    date: String,
-    link: String,
-    question: Problem,
+    pub date: String,
+    pub link: String,
+    pub question: Problem,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
@@ -19,34 +31,28 @@ pub enum ProblemDifficulty {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TopicTag {
-    name: String,
-    slug: String,
+    pub name: String,
+    pub slug: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CodeSnippet {
-    code: String,
-    lang: String,
-    lang_slug: String,
+    pub code: String,
+    pub lang: String,
+    pub lang_slug: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Problem {
-    question_id: String,
-    question_frontend_id: String,
-    title: String,
-    title_slug: String,
-    content: String,
-    is_paid_only: bool,
-    difficulty: ProblemDifficulty,
-    example_testcases: String,
-    topic_tags: Vec<TopicTag>,
-    code_snippets: Vec<CodeSnippet>,
-    stats: String,
-    hints: Vec<String>,
-    sample_test_case: String,
-    meta_data: String,
-    env_info: String,
+    pub title: String,
+    pub content: String,
+    pub is_paid_only: bool,
+    pub difficulty: ProblemDifficulty,
+    pub example_testcases: String,
+    pub topic_tags: Vec<TopicTag>,
+    pub code_snippets: Vec<CodeSnippet>,
+    pub hints: Vec<String>,
+    pub sample_test_case: String,
 }

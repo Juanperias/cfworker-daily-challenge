@@ -1,7 +1,7 @@
 use reqwest::Client;
 use serde_json::json;
 
-use crate::challenge::DailyChallenge;
+use crate::challenge::{DailyChallenge, GraphQLResponse};
 
 const LETCODE_URL: &str = "https://leetcode.com";
 
@@ -10,10 +10,7 @@ const DAILY_QUERY: &str = r#"query {
         date
         link
         question {
-            questionId
-            questionFrontendId
             title
-            titleSlug
             content
             isPaidOnly
             difficulty
@@ -28,15 +25,13 @@ const DAILY_QUERY: &str = r#"query {
                 langSlug
                 code
             }
-            stats
             hints
             sampleTestCase
-            metaData
-            envInfo
         }
     }
 }"#;
 
+// Strategy to fetch from https://github.com/JacobLinCool/LeetCode-Query
 pub async fn get_daily(client: &Client) -> DailyChallenge {
     let req = json!({
         "oprationName": "globalData",
@@ -54,7 +49,9 @@ pub async fn get_daily(client: &Client) -> DailyChallenge {
         .send()
         .await
         .unwrap()
-        .json::<DailyChallenge>()
+        .json::<GraphQLResponse>()
         .await
         .unwrap()
+        .data
+        .active_daily_coding_challenge_question
 }
