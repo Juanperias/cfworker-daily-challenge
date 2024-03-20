@@ -1,8 +1,9 @@
 use reqwest::Client;
+use serde_json::json;
 
 use crate::challenge::DailyChallenge;
 
-const LETCODE_URL: &str = "https://leetcode.com/graphql";
+const LETCODE_URL: &str = "https://leetcode.com";
 
 const DAILY_QUERY: &str = r#"query {
     activeDailyCodingChallengeQuestion {
@@ -22,7 +23,7 @@ const DAILY_QUERY: &str = r#"query {
                 slug
                 translatedName
             }
-            code_snippets {
+            codeSnippets {
                 lang
                 langSlug
                 code
@@ -37,9 +38,19 @@ const DAILY_QUERY: &str = r#"query {
 }"#;
 
 pub async fn get_daily(client: &Client) -> DailyChallenge {
+    let req = json!({
+        "oprationName": "globalData",
+        "variables": {},
+        "query": DAILY_QUERY
+    });
     client
-        .post(LETCODE_URL)
-        .body(DAILY_QUERY)
+        .post(format!("{LETCODE_URL}/graphql"))
+        .header("content-type", "application/json")
+        .header("origin", LETCODE_URL)
+        .header("referer", LETCODE_URL)
+        .header("x-csrftoken", "")
+        .header("Cookie", "csrftoken=\"\";LEETCODE_SESSION=\"\"")
+        .body(serde_json::to_string(&req).unwrap())
         .send()
         .await
         .unwrap()

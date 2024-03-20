@@ -9,7 +9,7 @@ mod challenge;
 mod daily;
 
 #[event(scheduled)]
-pub async fn main(e: ScheduledEvent, env: Env, ctx: ScheduleContext) {
+pub async fn main(_e: ScheduledEvent, _env: Env, _ctx: ScheduleContext) {
     // Custom panic
     #[cfg(target_arch = "wasm32")]
     std::panic::set_hook(Box::new(|info: &std::panic::PanicInfo| {
@@ -37,7 +37,7 @@ pub async fn main(e: ScheduledEvent, env: Env, ctx: ScheduleContext) {
     }
 
     let client = ClientBuilder::default()
-        .user_agent("Mozilla/5.0 RustLangES Daily API")
+        .user_agent("Mozilla/5.0 LeetCode API")
         .build()
         .expect("Cannot build client reqwest");
 
