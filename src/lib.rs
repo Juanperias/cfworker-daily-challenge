@@ -10,6 +10,12 @@ mod daily;
 
 #[event(scheduled)]
 pub async fn main(e: ScheduledEvent, env: Env, ctx: ScheduleContext) {
+    // Custom panic
+    #[cfg(target_arch = "wasm32")]
+    std::panic::set_hook(Box::new(|info: &std::panic::PanicInfo| {
+        console_error!("{info}")
+    }));
+
     // calculate days
     // its used for enumerate daily challenges
     let Ok(start_date) = Date::from_calendar_date(2024, Month::March, 25) else {
