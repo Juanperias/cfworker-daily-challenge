@@ -15,4 +15,4 @@ fallthrough = false
 # Docs: https://developers.cloudflare.com/workers/platform/triggers/cron-triggers/
 # Configuration: https://developers.cloudflare.com/workers/wrangler/configuration/#triggers
 [triggers]
-crons = ["* 0 * * *"]
+crons = ["0 0 * * *"]
