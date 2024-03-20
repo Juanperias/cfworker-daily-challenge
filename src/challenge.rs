@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct DailyChallenge {
     date: String,
     link: String,
@@ -8,6 +9,7 @@ pub struct DailyChallenge {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "PascalCase")]
 pub enum ProblemDifficulty {
     Easy,
     Medium,
@@ -15,14 +17,14 @@ pub enum ProblemDifficulty {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename = "camellCase")]
+#[serde(rename_all = "camelCase")]
 pub struct TopicTag {
     name: String,
     slug: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename = "camellCase")]
+#[serde(rename_all = "camelCase")]
 pub struct CodeSnippet {
     code: String,
     lang: String,
@@ -30,7 +32,7 @@ pub struct CodeSnippet {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename = "camellCase")]
+#[serde(rename_all = "camelCase")]
 pub struct Problem {
     question_id: String,
     question_frontend_id: String,
