@@ -1,5 +1,6 @@
 use reqwest::Client;
 use serde_json::json;
+use worker::console_warn;
 
 use crate::challenge::{DailyChallenge, GraphQLResponse};
 
@@ -48,9 +49,11 @@ pub async fn get_daily(client: &Client) -> DailyChallenge {
         .body(serde_json::to_string(&req).unwrap())
         .send()
         .await
+        .inspect_err(|e| console_warn!("Reqwest Error: {e:?}"))
         .unwrap()
         .json::<GraphQLResponse>()
         .await
+        .inspect_err(|e| console_warn!("Json Error: {e:?}"))
         .unwrap()
         .data
         .active_daily_coding_challenge_question
