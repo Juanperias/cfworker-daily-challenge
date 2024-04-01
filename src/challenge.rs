@@ -25,7 +25,7 @@ pub struct DailyChallenge {
 pub enum ProblemDifficulty {
     Easy,
     Medium,
-    Hard
+    Hard,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
