@@ -32,7 +32,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Install worker-build
         run: |
-          cargo install --trunk worker-build
+          cargo install worker-build
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         env:
