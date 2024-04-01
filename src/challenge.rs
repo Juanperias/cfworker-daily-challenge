@@ -70,7 +70,7 @@ impl ToString for DailyChallenge {
         );
         let test_cases = format!(
             "- {}",
-            self.question.example_testcases.replace("\\n", "\\n> - ")
+            self.question.example_testcases.replace('\n', "\n> - ")
         );
 
         let code = self
