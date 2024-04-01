@@ -56,3 +56,13 @@ pub struct Problem {
     pub hints: Vec<String>,
     pub sample_test_case: String,
 }
+
+impl ToString for ProblemDifficulty {
+    fn to_string(&self) -> String {
+        match self {
+            ProblemDifficulty::Easy => "facil".to_owned(),
+            ProblemDifficulty::Medium => "intermedio".to_owned(),
+            ProblemDifficulty::Hard => "dificil".to_owned(),
+        }
+    }
+}

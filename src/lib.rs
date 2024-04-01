@@ -2,16 +2,17 @@ use daily::get_daily;
 use reqwest::ClientBuilder;
 use time::{Date, Month, OffsetDateTime};
 use worker::{
-    console_debug, console_warn, event, Env, ScheduleContext, ScheduledEvent,
+    console_debug, console_error, console_warn, event, Env, ScheduleContext, ScheduledEvent,
 };
-#[cfg(target_arch = "wasm32")]
-use worker::console_error;
 
+use crate::cangrebot::set_daily;
+
+mod cangrebot;
 mod challenge;
 mod daily;
 
 #[event(scheduled)]
-pub async fn main(_e: ScheduledEvent, _env: Env, _ctx: ScheduleContext) {
+pub async fn main(_e: ScheduledEvent, env: Env, _ctx: ScheduleContext) {
     // Custom panic
     #[cfg(target_arch = "wasm32")]
     std::panic::set_hook(Box::new(|info: &std::panic::PanicInfo| {
@@ -38,6 +39,11 @@ pub async fn main(_e: ScheduledEvent, _env: Env, _ctx: ScheduleContext) {
         return;
     }
 
+    let Ok(endpoint) = env.var("ENDPOINT").map(|e| e.to_string()) else {
+        console_error!("Cannot get 'ENDPOINT' environment variable");
+        return;
+    };
+
     let client = ClientBuilder::default()
         .user_agent("Mozilla/5.0 LeetCode API")
         .build()
@@ -46,4 +52,6 @@ pub async fn main(_e: ScheduledEvent, _env: Env, _ctx: ScheduleContext) {
     let challenge = get_daily(&client).await;
 
     console_debug!("Challenge response: {challenge:?}");
+
+    set_daily(endpoint, days, challenge, &client).await;
 }

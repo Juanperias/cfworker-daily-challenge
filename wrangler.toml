@@ -17,3 +17,6 @@ fallthrough = false
 # Configuration: https://developers.cloudflare.com/workers/wrangler/configuration/#triggers
 [triggers]
 crons = ["10 0 * * *"]
+
+[env.local.vars]
+ENDPOINT = "http://localhost:8080"
