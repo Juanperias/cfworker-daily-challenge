@@ -64,7 +64,7 @@ impl ToString for DailyChallenge {
             &self
                 .question
                 .content
-                .split("\n")
+                .split('\n')
                 .take(30)
                 .collect::<String>(),
         );
