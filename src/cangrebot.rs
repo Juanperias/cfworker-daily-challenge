@@ -1,6 +1,6 @@
 use reqwest::Client;
 use serde_json::json;
-use worker::console_warn;
+use worker::{console_debug, console_warn};
 
 use crate::challenge::DailyChallenge;
 
@@ -23,4 +23,6 @@ pub async fn set_daily(endpoint: String, day: i64, challenge: DailyChallenge, cl
         .await
         .inspect_err(|e| console_warn!("Json Error: {e:?}"))
         .unwrap();
+
+    console_debug!("Result: {res:?}");
 }
