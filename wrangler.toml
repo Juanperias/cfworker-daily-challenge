@@ -1,5 +1,4 @@
 name = "daily-challenges"
-logpush = true
 workers_dev = true
 main = "build/worker/shim.mjs"
 compatibility_date = "2024-03-14"
