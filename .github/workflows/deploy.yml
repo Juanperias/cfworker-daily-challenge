@@ -6,6 +6,7 @@ on:
     branches:
       - main
     paths:
+      - ".github/workflows/deploy.yml"
       - "src/**/**.rs"
       - "Cargo.**"
       - "rust-toolchain.toml"
@@ -39,5 +40,4 @@ jobs:
           ENDPOINT: ${{ secrets.ENDPOINT }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          secrets: |
-            ENDPOINT
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
