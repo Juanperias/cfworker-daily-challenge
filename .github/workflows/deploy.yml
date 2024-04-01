@@ -9,7 +9,8 @@ on:
       - ".github/workflows/deploy.yml"
       - "wrangler.toml"
       - "src/**/**.rs"
-      - "Cargo.**"
+      - "Cargo.toml"
+      - "Cargo.lock"
       - "rust-toolchain.toml"
 
 jobs:
