@@ -1,3 +1,4 @@
+use html2md::parse_html;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -55,6 +56,45 @@ pub struct Problem {
     pub code_snippets: Vec<CodeSnippet>,
     pub hints: Vec<String>,
     pub sample_test_case: String,
+}
+
+impl ToString for DailyChallenge {
+    fn to_string(&self) -> String {
+        let parsed = parse_html(
+            &self
+                .question
+                .content
+                .split("\n")
+                .take(30)
+                .collect::<String>(),
+        );
+        let test_cases = format!(
+            "- {}",
+            self.question.example_testcases.replace("\\n", "\\n> - ")
+        );
+
+        let code = self
+            .question
+            .code_snippets
+            .iter()
+            .find(|c| c.lang_slug == "rust")
+            .map(|c| format!("```rs\n{}\n```", c.code))
+            .unwrap_or_default();
+
+        format!(
+            r#"{parsed}
+
+> Enlace:
+> https://leetcode.com/{}
+
+> Casos de Prueba
+> {test_cases}
+
+{code}
+"#,
+            self.link
+        )
+    }
 }
 
 impl ToString for ProblemDifficulty {

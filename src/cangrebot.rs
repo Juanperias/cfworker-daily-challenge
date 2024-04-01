@@ -7,7 +7,7 @@ use crate::challenge::DailyChallenge;
 pub async fn set_daily(endpoint: String, day: i64, challenge: DailyChallenge, client: &Client) {
     let req = json!({
         "title": format!("Reto #{day} - {}", challenge.question.title),
-        "message": challenge.question.content,
+        "message": challenge.to_string(),
         "tag_name": challenge.question.difficulty.to_string(),
     });
 
