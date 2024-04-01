@@ -2,8 +2,10 @@ use daily::get_daily;
 use reqwest::ClientBuilder;
 use time::{Date, Month, OffsetDateTime};
 use worker::{
-    console_debug, console_error, console_warn, event, Env, ScheduleContext, ScheduledEvent,
+    console_debug, console_warn, event, Env, ScheduleContext, ScheduledEvent,
 };
+#[cfg(target_arch = "wasm32")]
+use worker::console_error;
 
 mod challenge;
 mod daily;
@@ -33,7 +35,7 @@ pub async fn main(_e: ScheduledEvent, _env: Env, _ctx: ScheduleContext) {
 
     if days < 0 {
         console_warn!("Time left: {days}");
-        // return;
+        return;
     }
 
     let client = ClientBuilder::default()
