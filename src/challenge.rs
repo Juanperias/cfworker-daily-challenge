@@ -125,6 +125,9 @@ impl TagHandler for ImgHandler {
         let src = get_tag_attr(tag, "src").unwrap_or_default();
         let alt = get_tag_attr(tag, "alt");
 
+        console_debug!("SRC image content: {src}");
+        console_debug!("ALT image content: {alt:?}");
+
         if let Some(alt) = alt {
             printer.append_str(&format!("![{}]({})", alt, &src));
         } else {
