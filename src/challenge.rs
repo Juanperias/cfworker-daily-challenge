@@ -1,5 +1,9 @@
-use html2md::parse_html;
+use std::collections::HashMap;
+
+use html2md::common::get_tag_attr;
+use html2md::{parse_html_custom, TagHandler, TagHandlerFactory};
 use serde::{Deserialize, Serialize};
+use worker::console_debug;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -60,14 +64,22 @@ pub struct Problem {
 
 impl ToString for DailyChallenge {
     fn to_string(&self) -> String {
-        let parsed = parse_html(
+        console_debug!("Raw html content: {}", self.question.content);
+        let mut custom_parser: HashMap<String, Box<dyn TagHandlerFactory>> = HashMap::new();
+        custom_parser
+            .entry("img".to_owned())
+            .or_insert(Box::new(ImgHandler));
+
+        let parsed = parse_html_custom(
             &self
                 .question
                 .content
                 .split('\n')
                 .take(30)
                 .collect::<String>(),
+            &custom_parser,
         );
+        console_debug!("Content markdown Parsed: {parsed}");
         let test_cases = format!(
             "- {}",
             self.question.example_testcases.replace('\n', "\n> - ")
@@ -78,7 +90,7 @@ impl ToString for DailyChallenge {
             .code_snippets
             .iter()
             .find(|c| c.lang_slug == "rust")
-            .map(|c| format!("```rs\n{}\n```", c.code))
+            .map(|c| format!("```rs\nstruct Solution;\n\n{}\n```", c.code))
             .unwrap_or_default();
 
         format!(
@@ -104,5 +116,27 @@ impl ToString for ProblemDifficulty {
             ProblemDifficulty::Medium => "intermedio".to_owned(),
             ProblemDifficulty::Hard => "dificil".to_owned(),
         }
+    }
+}
+
+struct ImgHandler;
+impl TagHandler for ImgHandler {
+    fn handle(&mut self, tag: &html2md::Handle, printer: &mut html2md::StructuredPrinter) {
+        let src = get_tag_attr(tag, "src").unwrap_or_default();
+        let alt = get_tag_attr(tag, "alt");
+
+        if let Some(alt) = alt {
+            printer.append_str(&format!("![{}]({})", alt, &src));
+        } else {
+            printer.append_str(&src);
+        }
+    }
+
+    fn after_handle(&mut self, _printer: &mut html2md::StructuredPrinter) {}
+}
+
+impl TagHandlerFactory for ImgHandler {
+    fn instantiate(&self) -> Box<dyn TagHandler> {
+        Box::new(ImgHandler)
     }
 }
