@@ -21,7 +21,7 @@ pub async fn main(_e: ScheduledEvent, env: Env, _ctx: ScheduleContext) {
 
     // calculate days
     // its used for enumerate daily challenges
-    let Ok(start_date) = Date::from_calendar_date(2024, Month::March, 25) else {
+    let Ok(start_date) = Date::from_calendar_date(2024, Month::April, 8) else {
         console_warn!("Cannot create Start Date");
         return;
     };
