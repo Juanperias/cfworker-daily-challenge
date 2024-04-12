@@ -97,7 +97,7 @@ impl ToString for DailyChallenge {
             r#"{parsed}
 
 > Enlace:
-> https://leetcode.com/{}
+> https://leetcode.com{}
 
 > Casos de Prueba
 > {test_cases}
