@@ -4,7 +4,13 @@ use worker::{console_debug, console_warn};
 
 use crate::challenge::DailyChallenge;
 
-pub async fn set_daily(endpoint: String, day: i64, challenge: DailyChallenge, client: &Client) {
+pub async fn set_daily(
+    endpoint: &str,
+    apikey: &str,
+    day: i64,
+    challenge: DailyChallenge,
+    client: &Client,
+) {
     let req = json!({
         "title": format!("Reto #{day} - {}", challenge.question.title),
         "message": challenge.to_string(),
@@ -14,6 +20,7 @@ pub async fn set_daily(endpoint: String, day: i64, challenge: DailyChallenge, cl
     let res = client
         .post(endpoint)
         .header("content-type", "application/json")
+        .header("Authorization", apikey)
         .body(serde_json::to_string(&req).unwrap())
         .send()
         .await

@@ -18,6 +18,10 @@ pub async fn main(_e: ScheduledEvent, env: Env, _ctx: ScheduleContext) {
     std::panic::set_hook(Box::new(|info: &std::panic::PanicInfo| {
         console_error!("{info}")
     }));
+    let bot_key = env
+        .secret("BOT_APIKEY")
+        .map(|e| e.to_string())
+        .expect("Bot APIKEY Secret not found");
 
     // calculate days
     // its used for enumerate daily challenges
@@ -53,5 +57,5 @@ pub async fn main(_e: ScheduledEvent, env: Env, _ctx: ScheduleContext) {
 
     console_debug!("Challenge response: {challenge:?}");
 
-    set_daily(endpoint, days, challenge, &client).await;
+    set_daily(&endpoint, &bot_key, days, challenge, &client).await;
 }

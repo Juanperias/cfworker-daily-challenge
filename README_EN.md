@@ -24,6 +24,7 @@ To build and deploy this project, you will need the following:
 ### Environment Variables
 
 - `ENDPOINT`: URL of the endpoint where the daily challenge data will be sent.
+- `BOT_APIKEY`: Only necessary for our case that we have limited our endpoint for allowed users.
 
 ### Local Testing
 
@@ -36,3 +37,4 @@ This project is configured to deploy automatically using GitHub Actions workflow
 - `CLOUDFLARE_ACCOUNT_ID`: Your Cloudflare account ID.
 - `CLOUDFLARE_API_TOKEN`: Your Cloudflare API token.
 - `ENDPOINT`: URL of the API to which the daily challenge data will be sent.
+- `BOT_APIKEY`: Only necessary for our case that we have limited our endpoint for allowed users.
