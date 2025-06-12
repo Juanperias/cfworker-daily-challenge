@@ -39,11 +39,11 @@ jobs:
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         env:
-          ENDPOINT: ${{ secrets.ENDPOINT }}
-          BOT_APIKEY: ${{ secrets.BOT_APIKEY }}
+          CANGREBOT_API_ENDPOINT: ${{ secrets.CANGREBOT_API_ENDPOINT }}
+          CANGREBOT_APIKEY: ${{ secrets.CANGREBOT_APIKEY }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           secrets: |
-            ENDPOINT
-            BOT_APIKEY
+            CANGREBOT_API_ENDPOINT
+            CANGREBOT_APIKEY

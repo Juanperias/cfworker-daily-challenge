@@ -19,7 +19,7 @@ pub async fn main(_e: ScheduledEvent, env: Env, _ctx: ScheduleContext) {
         console_error!("{info}")
     }));
     let bot_key = env
-        .secret("BOT_APIKEY")
+        .secret("CANGREBOT_APIKEY")
         .map(|e| e.to_string())
         .expect("Bot APIKEY Secret not found");
 
@@ -43,8 +43,8 @@ pub async fn main(_e: ScheduledEvent, env: Env, _ctx: ScheduleContext) {
         return;
     }
 
-    let Ok(endpoint) = env.var("ENDPOINT").map(|e| e.to_string()) else {
-        console_error!("Cannot get 'ENDPOINT' environment variable");
+    let Ok(endpoint) = env.var("CANGREBOT_API_ENDPOINT").map(|e| e.to_string()) else {
+        console_error!("Cannot get 'CANGREBOT_API_ENDPOINT' environment variable");
         return;
     };
 

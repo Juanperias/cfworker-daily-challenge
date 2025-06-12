@@ -18,4 +18,4 @@ fallthrough = false
 crons = ["10 0 * * *"]
 
 [env.local.vars]
-ENDPOINT = "http://localhost:8080"
+CANGREBOT_API_ENDPOINT = "http://localhost:8080"

@@ -23,8 +23,8 @@ Para construir y desplegar este proyecto, necesitarás lo siguiente:
 
 ### Variables de Entorno
 
-- `ENDPOINT`: URL del punto final al que se enviarán los datos del reto diario.
-- `BOT_APIKEY`: Solo es necesario para nuestro caso que tenemos limitado nuestro endpoint para usuarios permitidos
+- `CANGREBOT_API_ENDPOINT`: URL del punto final al que se enviarán los datos del reto diario.
+- `CANGREBOT_APIKEY`: Solo es necesario para nuestro caso que tenemos limitado nuestro endpoint para usuarios permitidos
 
 ### Pruebas Locales
 
@@ -36,5 +36,5 @@ Este proyecto está configurado para desplegar automáticamente utilizando los f
 
 - `CLOUDFLARE_ACCOUNT_ID`: ID de tu cuenta de Cloudflare.
 - `CLOUDFLARE_API_TOKEN`: Token de API de Cloudflare.
-- `ENDPOINT`: URL de la API a la que se enviarán los datos del reto diario.
-- `BOT_APIKEY`: Solo es necesario para nuestro caso que tenemos limitado nuestro endpoint para usuarios permitidos
+- `CANGREBOT_API_ENDPOINT`: URL de la API a la que se enviarán los datos del reto diario.
+- `CANGREBOT_APIKEY`: Solo es necesario para nuestro caso que tenemos limitado nuestro endpoint para usuarios permitidos
