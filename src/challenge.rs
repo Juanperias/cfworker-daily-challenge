@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt::Display;
 
 use html2md::common::get_tag_attr;
 use html2md::{parse_html_custom, TagHandler, TagHandlerFactory};
@@ -62,8 +63,8 @@ pub struct Problem {
     pub sample_test_case: String,
 }
 
-impl ToString for DailyChallenge {
-    fn to_string(&self) -> String {
+impl Display for DailyChallenge {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         console_debug!("Raw html content: {}", self.question.content);
         let mut custom_parser: HashMap<String, Box<dyn TagHandlerFactory>> = HashMap::new();
         custom_parser
@@ -93,7 +94,7 @@ impl ToString for DailyChallenge {
             .map(|c| format!("```rs\nstruct Solution;\n\n{}\n```", c.code))
             .unwrap_or_default();
 
-        format!(
+        f.write_fmt(format_args!(
             r#"{parsed}
 
 > Enlace:
@@ -105,16 +106,16 @@ impl ToString for DailyChallenge {
 {code}
 "#,
             self.link
-        )
+        ))
     }
 }
 
-impl ToString for ProblemDifficulty {
-    fn to_string(&self) -> String {
+impl Display for ProblemDifficulty {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ProblemDifficulty::Easy => "facil".to_owned(),
-            ProblemDifficulty::Medium => "intermedio".to_owned(),
-            ProblemDifficulty::Hard => "dificil".to_owned(),
+            ProblemDifficulty::Easy => f.write_str("facil"),
+            ProblemDifficulty::Medium => f.write_str("intermedio"),
+            ProblemDifficulty::Hard => f.write_str("dificil"),
         }
     }
 }
