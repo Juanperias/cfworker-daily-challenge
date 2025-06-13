@@ -15,7 +15,7 @@ mod daily;
 pub async fn main(_e: ScheduledEvent, env: Env, _ctx: ScheduleContext) {
     // Custom panic
     #[cfg(target_arch = "wasm32")]
-    std::panic::set_hook(Box::new(|info: &std::panic::PanicInfo| {
+    std::panic::set_hook(Box::new(|info: &std::panic::PanicHookInfo| {
         console_error!("{info}")
     }));
     let bot_key = env

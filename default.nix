@@ -1,94 +1,62 @@
-let
-  inherit
-    (builtins)
-    currentSystem
-    fromJSON
-    readFile
-    ;
-  getFlake = name:
-    with (fromJSON (readFile ./flake.lock)).nodes.${name}.locked; {
-      inherit rev;
-      outPath = fetchTarball {
-        url = "https://github.com/${owner}/${repo}/archive/${rev}.tar.gz";
-        sha256 = narHash;
-      };
-    };
-in
-  {
-    system ? currentSystem,
-    pkgs ? import (getFlake "nixpkgs") {localSystem = {inherit system;};},
-    lib ? pkgs.lib,
-    crane,
-    cranix,
-    fenix,
-    stdenv ? pkgs.stdenv,
-    ...
-  }: let
-    # fenix: rustup replacement for reproducible builds
-    toolchain = fenix.${system}.fromToolchainFile {
-      file = ./rust-toolchain.toml;
-      sha256 = "sha256-e4mlaJehWBymYxJGgnbuCObVlqMlQSilZ8FljG9zPHY=";
-    };
-    # crane: cargo and artifacts manager
-    craneLib = crane.${system}.overrideToolchain toolchain;
-    # cranix: extends crane building system with workspace bin building and Mold + Cranelift integrations
-    cranixLib = craneLib.overrideScope' (cranix.${system}.craneOverride);
+{
+  pkgs,
+  lib ? pkgs.lib,
+  stdenv ? pkgs.stdenv,
+  crane,
+  fenix,
+  wrangler-fix,
+  ...
+}: let
+  # fenix: rustup replacement for reproducible builds
+  toolchain = fenix.fromToolchainFile {
+    file = ./rust-toolchain.toml;
+    sha256 = "sha256-KUm16pHj+cRedf8vxs/Hd2YWxpOrWZ7UOrwhILdSJBU=";
+  };
+  # crane: cargo and artifacts manager
+  craneLib = crane.overrideToolchain toolchain;
 
-    # buildInputs for Examples
-    buildInputs = with pkgs; [
+  nativeBuildInputs = with pkgs; [
+    worker-build
+    wasm-pack
+    wasm-bindgen-cli
+    binaryen
+  ];
+
+  buildInputs = with pkgs;
+    [
       openssl
+      pkg-config
+      autoPatchelfHook
+    ]
+    ++ lib.optionals stdenv.buildPlatform.isDarwin [
+      pkgs.libiconv
     ];
 
-    # Base args, need for build all crate artifacts and caching this for late builds
-    deps = {
-      nativeBuildInputs = with pkgs;
-        [
-          pkg-config
-          autoPatchelfHook
-        ]
-        ++ lib.optionals stdenv.buildPlatform.isDarwin [
-          pkgs.libiconv
-        ]
-        ++ lib.optionals stdenv.buildPlatform.isLinux [
-          pkgs.libxkbcommon.dev
-        ];
-      inherit buildInputs;
-    };
+  worker = craneLib.buildPackage {
+    doCheck = false;
+    src = craneLib.cleanCargoSource (craneLib.path ./.);
+    buildPhaseCargoCommand = "HOME=$(mktemp -d fake-homeXXXX) worker-build --release --mode no-install";
 
-    # Lambda for build packages with cached artifacts
-    commonArgs = targetName:
-      deps
-      // {
-        src = lib.cleanSourceWith {
-          src = craneLib.path ./.;
-          filter = craneLib.filterCargoSources;
-        };
-        doCheck = false;
-        CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER = "${stdenv.cc.targetPrefix}cc";
-        CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_RUNNER = "qemu-aarch64";
-        HOST_CC = "${stdenv.cc.nativePrefix}cc";
-        cargoExtraArgs = "-F ${targetName}";
-      };
-      cfApp = cranixLib.buildCranixBundle (commonArgs "cf,cf-kv");
-  in {
-    # `nix run`
-    apps = rec {
-      cf = cfApp.app;
-      default = cf;
-    };
-    # `nix develop`
-    devShells.default = cranixLib.devShell {
-      packages = with pkgs;
-        [
-          toolchain
-          pkg-config
-          cargo-release
-          cargo-make
-          worker-build
-          nodePackages.wrangler
-          binaryen
-        ]
-        ++ buildInputs;
-      LD_LIBRARY_PATH = lib.makeLibraryPath buildInputs;
-    };
-  }
+    # Custom build command is provided, so this should be enabled
+    doNotPostBuildInstallCargoBinaries = true;
+
+    installPhaseCommand = ''
+      cp -r ./build $out
+    '';
+
+    nativeBuildInputs = with pkgs; [esbuild] ++ nativeBuildInputs;
+
+    inherit buildInputs;
+  };
+in {
+  # `nix build`
+  packages.default = worker;
+
+  # `nix develop`
+  devShells.default = craneLib.devShell {
+    packages =
+      nativeBuildInputs
+      ++ buildInputs
+      ++ [wrangler-fix.wrangler];
+  };
+}

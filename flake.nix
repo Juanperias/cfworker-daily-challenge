@@ -1,31 +1,39 @@
 {
-  description = "A trello board clone";
+  description = "Daily challenges for RustLangES";
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    cranix.url = "github:Lemin-n/cranix/2af6b2e71577bb8836b10e28f3267f2c5342a8fd";
     crane.url = "github:ipetkov/crane";
-    fenix.url = "github:nix-community/fenix";
     flake-utils.url = "github:numtide/flake-utils";
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    wrangler = {
+      # Use 4.19.1
+      url = "github:ryand56/wrangler/1141a859c59e05ceb901d14790f0f75a6c5de3f5";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
-    self,
     nixpkgs,
     flake-utils,
     ...
   } @ inputs:
-  # Iterate over Arm, x86 for MacOs 🍎 and Linux 🐧
-    flake-utils.lib.eachSystem (flake-utils.lib.defaultSystems) (
-      system: let
-        dailyChallengeBundle = import ./. {
+    {
+      nix.settings = {
+        substituters = ["https://wrangler.cachix.org"];
+        trusted-public-keys = ["wrangler.cachix.org-1:N/FIcG2qBQcolSpklb2IMDbsfjZKWg+ctxx0mSMXdSs="];
+      };
+    }
+    // flake-utils.lib.eachSystem (flake-utils.lib.defaultSystems) (
+      system:
+        import ./. rec {
           inherit system;
           pkgs = nixpkgs.legacyPackages.${system};
-          crane = inputs.crane.lib;
-          cranix = inputs.cranix.lib;
-          fenix = inputs.fenix.packages;
-        };
-      in {
-        inherit (dailyChallengeBundle) apps devShells;
-      }
+          crane = inputs.crane.mkLib pkgs;
+          fenix = inputs.fenix.packages.${system};
+          wrangler-fix = inputs.wrangler.packages.${system};
+        }
     );
 }
