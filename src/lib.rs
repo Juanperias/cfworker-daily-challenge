@@ -43,7 +43,7 @@ pub async fn main(_e: ScheduledEvent, env: Env, _ctx: ScheduleContext) {
         return;
     }
 
-    let Ok(endpoint) = env.var("CANGREBOT_API_ENDPOINT").map(|e| e.to_string()) else {
+    let Ok(endpoint) = env.var("CANGREBOT_API_ENDPOINT").map(|e| format!("{}/daily_challenge", e.to_string())) else {
         console_error!("Cannot get 'CANGREBOT_API_ENDPOINT' environment variable");
         return;
     };
