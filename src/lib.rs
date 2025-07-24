@@ -11,6 +11,8 @@ mod cangrebot;
 mod challenge;
 mod daily;
 
+/// # Panics
+/// This may panic if the environment variable `APIKEY` is not found, or if `CANGREBOT_API_ENDPOINT` is also missing.
 #[event(scheduled)]
 pub async fn main(_e: ScheduledEvent, env: Env, _ctx: ScheduleContext) {
     // Custom panic

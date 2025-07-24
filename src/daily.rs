@@ -6,7 +6,7 @@ use crate::challenge::{DailyChallenge, GraphQLResponse};
 
 const LETCODE_URL: &str = "https://leetcode.com";
 
-const DAILY_QUERY: &str = r#"query {
+const DAILY_QUERY: &str = r"query {
     activeDailyCodingChallengeQuestion {
         date
         link
@@ -30,7 +30,7 @@ const DAILY_QUERY: &str = r#"query {
             sampleTestCase
         }
     }
-}"#;
+}";
 
 // Strategy to fetch from https://github.com/JacobLinCool/LeetCode-Query
 pub async fn get_daily(client: &Client) -> DailyChallenge {

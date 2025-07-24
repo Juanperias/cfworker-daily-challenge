@@ -11,7 +11,7 @@ pub async fn set_daily(
     challenge: DailyChallenge,
     client: &Client,
 ) {
-    let req = json!({
+    let request = json!({
         "title": format!("Reto #{day} - {}", challenge.question.title),
         "message": challenge.to_string(),
         "tag_name": challenge.question.difficulty.to_string(),
@@ -21,7 +21,7 @@ pub async fn set_daily(
         .post(endpoint)
         .header("content-type", "application/json")
         .header("Authorization", apikey)
-        .body(serde_json::to_string(&req).unwrap())
+        .body(serde_json::to_string(&request).unwrap())
         .send()
         .await
         .inspect_err(|e| console_warn!("Reqwest Error: {e:?}"))

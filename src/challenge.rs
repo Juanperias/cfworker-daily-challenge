@@ -95,7 +95,7 @@ impl Display for DailyChallenge {
             .unwrap_or_default();
 
         f.write_fmt(format_args!(
-            r#"{parsed}
+            r"{parsed}
 
 > Enlace:
 > https://leetcode.com{}
@@ -104,7 +104,7 @@ impl Display for DailyChallenge {
 > {test_cases}
 
 {code}
-"#,
+",
             self.link
         ))
     }
